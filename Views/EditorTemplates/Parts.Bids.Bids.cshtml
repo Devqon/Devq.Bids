@@ -10,12 +10,12 @@
     @Html.EditorFor(m => m.BidsActive)
     <label class="forcheckbox" for="@Html.FieldIdFor(m => m.BidsActive)">@T("Allow new Bids")</label> 
     <span class="hint forcheckbox">@T("Enable to show the bid form. Disabling still allows the existing Bids to be shown but does not allow the conversation to continue.")</span>
-    @Html.EditorFor(m => m.MinimumBidPrice)
+    <br/>
+    @Html.DropDownListFor(m => m.BidType, new SelectList(Enum.GetValues(typeof(BidType))), new { @class = "ddl-bidtype" })
+    <br/>
+    @Html.TextBoxFor(m => m.MinimumBidPrice, new { @class = "input-minimum-price" })
     <label class="fortextbox" for="@Html.FieldIdFor(m => m.MinimumBidPrice)">@T("Minimum bid price")</label>
     <span class="hint fortextbox">@T("The minimum bid price")</span>
-    
-    @Html.DropDownListFor(m => m.BidType, new SelectList(Enum.GetValues(typeof(BidType))), new { @class = "ddl-bidtype"})
-    @Html.TextBoxFor(m => m.MinimumBidPrice, new { @class = "input-minimum-price" })
 </fieldset>
 
 

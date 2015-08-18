@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Devq.Bids.Models;
+using Devq.Bids.Services;
 using Orchard.ContentManagement;
 using Orchard.ContentManagement.Drivers;
 
@@ -8,9 +9,11 @@ namespace Devq.Bids.Drivers
     public class BidsPartDriver : ContentPartDriver<BidsPart> {
 
         private readonly IContentManager _contentManager;
+        private readonly IBidService _bidService;
 
-        public BidsPartDriver(IContentManager contentManager) {
+        public BidsPartDriver(IContentManager contentManager, IBidService bidService) {
             _contentManager = contentManager;
+            _bidService = bidService;
         }
 
         protected override DriverResult Display(BidsPart part, string displayType, dynamic shapeHelper) {
@@ -29,7 +32,7 @@ namespace Devq.Bids.Drivers
 
                     var editorShape = _contentManager.BuildEditor(newBid);
 
-                    return shapeHelper.Parts_BidForm(EditorShape: editorShape, CanStillBid: true);
+                    return shapeHelper.Parts_BidForm(EditorShape: editorShape, CanStillBid: _bidService.CanStillBidOn(part));
                 }));
         }
 

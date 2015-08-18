@@ -9,6 +9,7 @@ using Devq.Bids.Settings;
 using JetBrains.Annotations;
 using Orchard;
 using Orchard.ContentManagement;
+using Orchard.Core.Common.Models;
 using Orchard.Environment.Configuration;
 using Orchard.Environment.Descriptor;
 using Orchard.Environment.State;
@@ -181,25 +182,30 @@ namespace Devq.Bids.Services {
         }
 
         public bool CanStillBidOn(BidsPart bidsPart) {
-            //var bidsettings = _orchardServices.WorkContext.CurrentSite.As<BidSettingsPart>();
-            //if (bidsettings == null) {
-            //    return false;
-            //}
+            var bidsettings = _orchardServices.WorkContext.CurrentSite.As<BidSettingsPart>();
+            if (bidsettings == null)
+            {
+                return false;
+            }
 
-            //if (bidsettings.ClosedBidsDelay > 0) {
-            //    var commonPart = bidsPart.As<CommonPart>();
-            //    if (bidsPart == null) {
-            //        return false;
-            //    }
+            if (bidsettings.ClosedBidsDelay > 0)
+            {
+                var commonPart = bidsPart.As<CommonPart>();
+                if (bidsPart == null)
+                {
+                    return false;
+                }
 
-            //    if (!commonPart.CreatedUtc.HasValue) {
-            //        return false;
-            //    }
+                if (!commonPart.CreatedUtc.HasValue)
+                {
+                    return false;
+                }
 
-            //    if (commonPart.CreatedUtc.Value.AddDays(bidsettings.ClosedBidsDelay) < _clock.UtcNow) {
-            //        return false;
-            //    }
-            //}
+                if (commonPart.CreatedUtc.Value.AddDays(bidsettings.ClosedBidsDelay) < _clock.UtcNow)
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
