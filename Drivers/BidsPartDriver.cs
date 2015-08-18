@@ -40,6 +40,11 @@ namespace Devq.Bids.Drivers
 
         protected override DriverResult Editor(BidsPart part, IUpdateModel updater, dynamic shapeHelper) {
             updater.TryUpdateModel(part, Prefix, null, null);
+
+            if (part.BidType == BidType.Free || part.BidType == BidType.Open) {
+                part.MinimumBidPrice = 0;
+            }
+
             return Editor(part, shapeHelper);
         }
     }

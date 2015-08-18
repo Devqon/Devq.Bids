@@ -1,15 +1,49 @@
-﻿@model Devq.Bids.Models.BidsPart
+﻿@using Devq.Bids.Models
+@model BidsPart
 
 <fieldset>
     <legend>@T("Bids") 
-    @if (Model.Bids.Any()) { 
-        <span>&#150; @Display.BidsummaryLinks(item: Model.ContentItem, count: Model.Bids.Count())</span> 
-     }
-     </legend>
+        @if (Model.Id != 0 && Model.Bids.Any()) { 
+            <span>@*&#150; @Display.BidsummaryLinks(item: Model.ContentItem, count: Model.Bids.Count())*@</span> 
+        }
+    </legend>
     @Html.EditorFor(m => m.BidsActive)
     <label class="forcheckbox" for="@Html.FieldIdFor(m => m.BidsActive)">@T("Allow new Bids")</label> 
     <span class="hint forcheckbox">@T("Enable to show the bid form. Disabling still allows the existing Bids to be shown but does not allow the conversation to continue.")</span>
     @Html.EditorFor(m => m.MinimumBidPrice)
     <label class="fortextbox" for="@Html.FieldIdFor(m => m.MinimumBidPrice)">@T("Minimum bid price")</label>
     <span class="hint fortextbox">@T("The minimum bid price")</span>
+    
+    @Html.DropDownListFor(m => m.BidType, new SelectList(Enum.GetValues(typeof(BidType))), new { @class = "ddl-bidtype"})
+    @Html.TextBoxFor(m => m.MinimumBidPrice, new { @class = "input-minimum-price" })
 </fieldset>
+
+
+@using (Script.Foot()) {
+    <script>
+
+        (function($) {
+
+            $(function() {
+
+                togglePriceInput();
+
+                $(".ddl-bidtype").change(function() {
+                    togglePriceInput();
+                });
+
+                function togglePriceInput() {
+                    var value = $(".ddl-bidtype").val().toLowerCase();
+                    if (value == "free" || value == "open") {
+                        $(".input-minimum-price").hide();
+                    } else {
+                        $(".input-minimum-price").show();
+                    }
+                }
+
+            });
+
+        })(jQuery);
+
+    </script>
+}

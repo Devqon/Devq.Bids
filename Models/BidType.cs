@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-namespace Devq.Bids.Models
+﻿namespace Devq.Bids.Models
 {
     public enum BidType
     {
