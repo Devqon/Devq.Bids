@@ -1,4 +1,6 @@
-﻿using Orchard.ContentManagement.MetaData;
+﻿using System;
+using Devq.Bids.Models;
+using Orchard.ContentManagement.MetaData;
 using Orchard.Core.Contents.Extensions;
 using Orchard.Data.Migration;
 
@@ -40,5 +42,22 @@ namespace Devq.Bids {
             return 1;
         }
 
+        public int UpdateFrom1() {
+
+            SchemaBuilder.AlterTable(typeof (BidPartRecord).Name,
+                table => table
+                    .AddColumn<string>("Bider"));
+
+            return 2;
+        }
+
+        public int UpdateFrom2() {
+
+            SchemaBuilder.AlterTable(typeof (BidPartRecord).Name,
+                table => table
+                    .AddColumn<DateTime>("BidDateUtc"));
+
+            return 3;
+        }
     }
 }

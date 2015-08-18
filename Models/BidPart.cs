@@ -16,9 +16,14 @@ namespace Devq.Bids.Models
             set { Store(r => r.BidPrice, value); }
         }
 
-        public DateTime? Date
-        {
-            get { return this.As<CommonPart>().CreatedUtc; }
+        public string Bider {
+            get { return Retrieve(r => r.Bider); }
+            set { Store(r => r.Bider, value); }
+        }
+
+        public DateTime? BidDateUtc {
+            get { return Retrieve(r => r.BidDateUtc); }
+            set { Store(r => r.BidDateUtc, value); }
         }
 
         public IUser Owner {

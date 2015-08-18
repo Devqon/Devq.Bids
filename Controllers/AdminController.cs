@@ -25,11 +25,11 @@ namespace Devq.Bids.Controllers {
 
         public AdminController(
             IOrchardServices orchardServices,
-            IBidService BidService,
+            IBidService bidService,
             ISiteService siteService,
             IShapeFactory shapeFactory) {
             _orchardServices = orchardServices;
-            _bidService = BidService;
+            _bidService = bidService;
             _siteService = siteService;
             _contentManager = _orchardServices.ContentManager;
             Logger = NullLogger.Instance;
@@ -42,7 +42,7 @@ namespace Devq.Bids.Controllers {
         dynamic Shape { get; set; }
 
         public ActionResult Index(BidIndexOptions options, PagerParameters pagerParameters) {
-            Pager pager = new Pager(_siteService.GetSiteSettings(), pagerParameters);
+            var pager = new Pager(_siteService.GetSiteSettings(), pagerParameters);
 
             // Default options
             if (options == null)
@@ -106,9 +106,9 @@ namespace Devq.Bids.Controllers {
                 options = new BidDetailsOptions();
 
             // Filtering
-            IContentQuery<BidPart, BidPartRecord> Bids = _bidService.GetBidsForBidedContent(id);
+            var bids = _bidService.GetBidsForBidedContent(id);
             
-            var entries = Bids.List().Select(Bid => CreateBidEntry(Bid)).ToList();
+            var entries = bids.List().Select(CreateBidEntry).ToList();
             var model = new BidsDetailsViewModel {
                 Bids = entries,
                 Options = options,
@@ -140,20 +140,20 @@ namespace Devq.Bids.Controllers {
         }
 
         [HttpPost]
-        public ActionResult Disable(int BidedItemId, string returnUrl) {
+        public ActionResult Disable(int bidedItemId, string returnUrl) {
             if (!_orchardServices.Authorizer.Authorize(Permissions.ManageBids, T("Couldn't disable Bids")))
                 return new HttpUnauthorizedResult();
 
-            _bidService.DisableBidsForBidedContent(BidedItemId);
+            _bidService.DisableBidsForBidedContent(bidedItemId);
             return this.RedirectLocal(returnUrl, () => RedirectToAction("Index"));
         }
 
         [HttpPost]
-        public ActionResult Enable(int BidedItemId, string returnUrl) {
+        public ActionResult Enable(int bidedItemId, string returnUrl) {
             if (!_orchardServices.Authorizer.Authorize(Permissions.ManageBids, T("Couldn't enable Bids")))
                 return new HttpUnauthorizedResult();
 
-            _bidService.EnableBidsForBidedContent(BidedItemId);
+            _bidService.EnableBidsForBidedContent(bidedItemId);
 
             return this.RedirectLocal(returnUrl, () => RedirectToAction("Index"));
         }
@@ -163,14 +163,14 @@ namespace Devq.Bids.Controllers {
             if (!_orchardServices.Authorizer.Authorize(Permissions.ManageBids, T("Couldn't delete Bid")))
                 return new HttpUnauthorizedResult();
 
-            var BidPart = _contentManager.Get<BidPart>(id);
-            if (BidPart == null)
+            var bidPart = _contentManager.Get<BidPart>(id);
+            if (bidPart == null)
                 return new HttpNotFoundResult();
 
-            int BidedOn = BidPart.Record.BidedOn;
+            var bidedOn = bidPart.Record.BidedOn;
             _bidService.DeleteBid(id);
 
-            return this.RedirectLocal(returnUrl, () => RedirectToAction("Details", new { id = BidedOn }));
+            return this.RedirectLocal(returnUrl, () => RedirectToAction("Details", new { id = bidedOn }));
         }
 
         private BidEntry CreateBidEntry(BidPart item) {

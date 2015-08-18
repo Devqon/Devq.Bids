@@ -3,4 +3,4 @@
     BidPart bid = Model.ContentPart;
 }
 
-@Html.LinkOrDefault(bid.Owner.UserName, "", new { rel = "nofollow" })
+@Html.LinkOrDefault(bid.Bider, "", new { rel = "nofollow" })

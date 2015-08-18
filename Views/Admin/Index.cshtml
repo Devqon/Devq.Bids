@@ -1,5 +1,5 @@
-﻿@model Devq.Bids.ViewModels.BidsIndexViewModel
-@using Devq.Bids.Models
+﻿@model BidsIndexViewModel
+
 @using Devq.Bids.ViewModels
 @using Orchard.Mvc.Html;
 @using Orchard.Utility.Extensions
@@ -46,41 +46,38 @@
                     <th scope="col">@T("Actions")</th>
                 </tr>
             </thead>
-            @{var BidIndex = 0;}
-            @foreach (var BidEntry in Model.Bids) {
-                var BidClass = "";
-                if (!HasText(BidEntry.Bid.UserName)) {
-                    BidClass = "anonymous";
+            @{var bidIndex = 0;}
+            @foreach (var bidEntry in Model.Bids) {
+                var bidClass = "";
+                if (!HasText(bidEntry.Bid.Bider)) {
+                    bidClass = "anonymous";
                 }
-            <tr itemscope="itemscope" itemid="@Model.Bids[BidIndex].Bid.Id" itemtype="http://orchardproject.net/data/Bid" class="@BidClass" style="background-color: @(Model.Bids[BidIndex].IsHeighest ? "#89C35C" : "")">
+            <tr itemscope="itemscope" itemid="@Model.Bids[bidIndex].Bid.Id" itemtype="http://orchardproject.net/data/Bid" class="@bidClass" style="background-color: @(Model.Bids[bidIndex].IsHeighest ? "#89C35C" : "")">
                 <td>
-                    <input type="hidden" value="@Model.Bids[BidIndex].Bid.Id" name="@Html.NameOf(m => m.Bids[BidIndex].Bid.Id)"/>
-                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Bids[BidIndex].IsChecked)"/>
+                    <input type="hidden" value="@Model.Bids[bidIndex].Bid.Id" name="@Html.NameOf(m => m.Bids[bidIndex].Bid.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Bids[bidIndex].IsChecked)"/>
                 </td>
                 <td>
-                    <div>@BidEntry.Bid.Author</div>
-                    @if (HasText(BidEntry.Bid.UserName) && BidEntry.Bid.Author != BidEntry.Bid.UserName) {
-                        <div class="authenticated-Bider-id">@BidEntry.Bid.UserName</div>
-                    }
+                    <div>@bidEntry.Bid.Bider</div>
                 </td>
                 <td>
                     @* would ideally have permalinks for individual Bids *@
-                    <p><a href="@Url.ItemDisplayUrl(BidEntry.BidedOn)#Bids"><time>@Display.DateTime(DateTimeUtc: BidEntry.Bid.BidDateUtc.GetValueOrDefault())</time></a></p>
-                    @if (BidEntry.Bid.BidPrice != null) {
-                        <span>@BidEntry.Bid.BidPrice.ToString("c")</span>
+                    <p><a href="@Url.ItemDisplayUrl(bidEntry.BidedOn)#Bids"><time>@Display.DateTime(DateTimeUtc: bidEntry.Bid.BidDateUtc.GetValueOrDefault())</time></a></p>
+                    @if (bidEntry.Bid.BidPrice != null) {
+                        <span>@bidEntry.Bid.BidPrice.ToString("c")</span>
                     }
                     else {
                         @T("[Empty]")
                     }
                 </td>
-                <td>@Html.ItemDisplayLink(BidEntry.BidedOn)</td>
+                <td>@Html.ItemDisplayLink(bidEntry.BidedOn)</td>
                 <td>
                     <div class="actions">
-                        <a href="@Url.Action("Edit", new {BidEntry.Bid.Id})" title="@T("Edit")">@T("Edit")</a>@T(" | ")
-                        <a href="@Url.Action("Delete", new {BidEntry.Bid.Id, returnUrl = ViewContext.RequestContext.HttpContext.Request.ToUrlString()})" itemprop="RemoveUrl UnsafeUrl">@T("Delete")</a>
+                        <a href="@Url.Action("Edit", new {bidEntry.Bid.Id})" title="@T("Edit")">@T("Edit")</a>@T(" | ")
+                        <a href="@Url.Action("Delete", new {bidEntry.Bid.Id, returnUrl = ViewContext.RequestContext.HttpContext.Request.ToUrlString()})" itemprop="RemoveUrl UnsafeUrl">@T("Delete")</a>
                     </div>
                 </td>            </tr>
-            BidIndex = BidIndex + 1;
+            bidIndex = bidIndex + 1;
             } 
         </table>
         @Display(Model.Pager)
