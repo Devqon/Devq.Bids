@@ -1,12 +1,11 @@
-﻿@using Devq.Bids.Models
-@model Devq.Bids.Models.BidPart
+﻿@model Devq.Bids.Models.BidPart
 
 <fieldset class="who">
     <ol>
         <li>
-            @Html.LabelFor(m => m.Author, T("Name"))
-            @Html.TextBoxFor(m => m.Author, new { @class = "text medium"})
-            <span class="hint">@T("The author's name.")</span>
+            @Html.LabelFor(m => m.Bider, T("Name"))
+            @Html.TextBoxFor(m => m.Bider, new { @class = "text medium" })
+            <span class="hint">@T("The bider's name.")</span>
         </li>
     </ol>
     </fieldset>

@@ -1,11 +1,11 @@
-﻿@model Devq.Bids.Models.BidsettingsPart
+﻿@model Devq.Bids.Models.BidSettingsPart
 
 <fieldset>
     <legend>@T("Bids")</legend>
 
     <div>
         <label for="bidsettings_closedBidsDelay">@T("Automatically close Bids after")</label>
-        @Html.TextBoxFor(m => m.ClosedBidsDelay, new { @class = "text small"}) @T("days")
+        @Html.TextBoxFor(m => m.ClosedBidsDelay, new { @class = "text small", type = "number" }) @T("days")
         @Html.ValidationMessage("ClosedBidsDelay", "*")
         <span class="hint">@T("Number of days after Bids are automatically closed. Leave to 0 to have them always available.")</span>
     </div>
