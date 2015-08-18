@@ -1,0 +1,12 @@
+﻿@using Devq.Bids.Models
+@using Orchard.ContentManagement
+@using Orchard.Utility.Extensions
+
+@{
+    BidPart Bid = Model.ContentPart;
+    var settings = WorkContext.CurrentSite.As<BidsettingsPart>();
+}
+
+@if(settings.ModerateBids) {
+    @T(" | ")
+}

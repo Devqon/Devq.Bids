@@ -1,0 +1,88 @@
+﻿@model Devq.Bids.ViewModels.BidsIndexViewModel
+@using Devq.Bids.Models
+@using Devq.Bids.ViewModels
+@using Orchard.Mvc.Html;
+@using Orchard.Utility.Extensions
+
+@{
+    Style.Require("Admin");
+    Script.Require("ShapesBase");
+
+    Layout.Title = T("Bids").ToString();
+}
+
+@using(Html.BeginFormAntiForgeryPost()) { 
+    @Html.ValidationSummary()
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, BidIndexBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, BidIndexBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, BidIndexFilter.All, T("All Bids").ToString())
+        </select>
+        <button type="submit" name="submit.Filter" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items" summary="@T("This is a table of the Bids in your application")">
+            <colgroup>
+                <col id="Col1" />
+                <col id="Col2" />
+                <col id="Col3" />
+                <col id="Col4" />
+                <col id="Col5" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col"><input type="checkbox" class="check-all"/></th>
+                    <th scope="col">@T("Author")</th>
+                    <th scope="col">@T("Bid")</th>
+                    <th scope="col">@T("Bided On")</th>
+                    <th scope="col">@T("Actions")</th>
+                </tr>
+            </thead>
+            @{var BidIndex = 0;}
+            @foreach (var BidEntry in Model.Bids) {
+                var BidClass = "";
+                if (!HasText(BidEntry.Bid.UserName)) {
+                    BidClass = "anonymous";
+                }
+            <tr itemscope="itemscope" itemid="@Model.Bids[BidIndex].Bid.Id" itemtype="http://orchardproject.net/data/Bid" class="@BidClass" style="background-color: @(Model.Bids[BidIndex].IsHeighest ? "#89C35C" : "")">
+                <td>
+                    <input type="hidden" value="@Model.Bids[BidIndex].Bid.Id" name="@Html.NameOf(m => m.Bids[BidIndex].Bid.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Bids[BidIndex].IsChecked)"/>
+                </td>
+                <td>
+                    <div>@BidEntry.Bid.Author</div>
+                    @if (HasText(BidEntry.Bid.UserName) && BidEntry.Bid.Author != BidEntry.Bid.UserName) {
+                        <div class="authenticated-Bider-id">@BidEntry.Bid.UserName</div>
+                    }
+                </td>
+                <td>
+                    @* would ideally have permalinks for individual Bids *@
+                    <p><a href="@Url.ItemDisplayUrl(BidEntry.BidedOn)#Bids"><time>@Display.DateTime(DateTimeUtc: BidEntry.Bid.BidDateUtc.GetValueOrDefault())</time></a></p>
+                    @if (BidEntry.Bid.BidPrice != null) {
+                        <span>@BidEntry.Bid.BidPrice.ToString("c")</span>
+                    }
+                    else {
+                        @T("[Empty]")
+                    }
+                </td>
+                <td>@Html.ItemDisplayLink(BidEntry.BidedOn)</td>
+                <td>
+                    <div class="actions">
+                        <a href="@Url.Action("Edit", new {BidEntry.Bid.Id})" title="@T("Edit")">@T("Edit")</a>@T(" | ")
+                        <a href="@Url.Action("Delete", new {BidEntry.Bid.Id, returnUrl = ViewContext.RequestContext.HttpContext.Request.ToUrlString()})" itemprop="RemoveUrl UnsafeUrl">@T("Delete")</a>
+                    </div>
+                </td>            </tr>
+            BidIndex = BidIndex + 1;
+            } 
+        </table>
+        @Display(Model.Pager)
+    </fieldset>
+} 

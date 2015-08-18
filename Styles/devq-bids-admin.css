@@ -1,0 +1,20 @@
+﻿table.items .actions {
+    white-space:nowrap;   
+}
+table.items tr {
+    background:#fff;   
+}
+table.items tr.anonymous {
+    background:#fff;   
+}
+.anonymous-bider-id,
+.authenticated-Bider-id {
+    font-style:italic;
+}
+
+/* For margin on the Bids table list. */
+/* Need to revisit */
+.orchard-bids .items 
+{
+    margin-top: 10px;
+}

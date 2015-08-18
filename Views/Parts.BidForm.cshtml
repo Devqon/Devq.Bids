@@ -1,0 +1,62 @@
+﻿@using Devq.Bids
+@using Devq.Bids.Models
+@using Devq.Bids.Settings
+@using Orchard.Utility.Extensions;
+
+@{
+    BidsPart bidsPart = Model.ContentPart;
+    bool canStillBidOn = Model.CanStillBid;
+    var settings = bidsPart.TypePartDefinition.Settings.GetModel<BidsPartSettings>();
+}
+
+
+@*@if (!Model.ContentPart.BidsActive || !canStillBidOn) {
+    if (bidsPart.Bids.Any()) {
+    <div id="bids">
+        <p class="bid-disabled">@T("Bids have been disabled for this content.")</p>
+    </div>
+    }
+}*@
+@if (settings.MustBeAuthenticated && WorkContext.CurrentUser == null) {
+    <div id="bids">
+        <p class="bid-disabled">@T("You must be authenticated in order to add a Bid.")</p>
+    </div>
+}
+else if (WorkContext.CurrentUser == null && !AuthorizedFor(Permissions.AddBid)) {
+    <h2 id="add-bid">@T("Add a bid")</h2>
+    <p class="info message">@T("You must {0} to bid.", Html.ActionLink(T("log on").ToString(), "LogOn",
+                            new { Controller = "Account", Area = "Orchard.Users", ReturnUrl = string.Format("{0}#addabid", Context.Request.RawUrl) }))</p>
+}
+else {
+    @Html.ValidationSummary() 
+    <span id="bid-form-beacon"></span>
+    using (Html.BeginFormAntiForgeryPost(Url.Action("Create", "Bid", new { Area = "Devq.Bids", ReturnUrl = Context.Request.ToUrlString() }), FormMethod.Post, new { @class = "bid-form", id="bid-form-" + Model.ContentItem.Id })) {
+        if (TempData.ContainsKey("Bids.InvalidBidEditorShape")) {
+            @Display(TempData["Bids.InvalidBidEditorShape"]);
+        }
+        else {
+            @Display(Model.EditorShape)
+        }
+        <button class="primaryAction btn btn-primary" type="submit">@T("Submit Bid")</button>
+    }
+
+}
+
+@*TODO make it working with jQuery*@
+@*@Script.Require("jQuery");
+
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+    //<![CDATA[
+        $(document).ready(function () {
+            var id = "@Model.ContentItem.Id";
+            var form = $("bid-form-" + id);
+
+            $(form).submit(function() {
+
+            });
+        });
+    //]]>
+    </script>
+}*@

@@ -1,0 +1,13 @@
+﻿@model Devq.Bids.Settings.BidsPartSettings
+
+<fieldset>
+    <div>
+        @Html.EditorFor(m => m.DefaultBidsShown)
+        <label class="fortextbox" for="@Html.FieldIdFor(m => m.DefaultBidsShown)">@T("Default maximum number of bids shown")</label>
+    </div>
+        <div>
+        @Html.EditorFor(m => m.MustBeAuthenticated)
+        <label class="forcheckbox" for="@Html.FieldIdFor( m => m.MustBeAuthenticated)">@T("Users must be authenticated to Bid")</label>
+    </div>
+</fieldset>
+

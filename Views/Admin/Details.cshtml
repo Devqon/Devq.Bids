@@ -1,0 +1,105 @@
+﻿@model Devq.Bids.ViewModels.BidsDetailsViewModel
+@using Devq.Bids.Models
+@using Devq.Bids.ViewModels
+
+@{ Layout.Title = T("Bids for {0}", Model.DisplayNameForBidedItem).ToString(); }
+
+<div class="manage">
+    @if (Model.BidsClosedOnItem) {
+        using (Html.BeginFormAntiForgeryPost(Url.Action("Enable", new { BidedItemId = Model.BidedItemId }), FormMethod.Post, new { @class = "inline" })) {
+    <fieldset>
+        <button type="submit" title="@T("Enable Bids")">@T("Enable Bids")</button>
+    </fieldset>
+        }
+    } else {
+        using (Html.BeginFormAntiForgeryPost(Url.Action("Disable", new { BidedItemId = Model.BidedItemId }), FormMethod.Post, new { @class = "inline" })) { 
+    <fieldset>
+        <button type="submit" class="primaryAction" title="@T("Disable Bids")">@T("Disable Bids")</button>
+    </fieldset>
+        }
+    } 
+</div>
+@using(Html.BeginFormAntiForgeryPost()) { 
+    @Html.ValidationSummary()
+    <fieldset class="bulk-actions">
+        <label for="publishActions">@T("Actions:")</label>
+        <select id="publishActions" name="@Html.NameOf(m => m.Options.BulkAction)">
+            @Html.SelectOption(Model.Options.BulkAction, BidDetailsBulkAction.None, T("Choose action...").ToString())
+            @Html.SelectOption(Model.Options.BulkAction, BidDetailsBulkAction.Delete, T("Delete").ToString())
+        </select>
+        <button type="submit" name="submit.BulkEdit" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset class="bulk-actions">
+        <label for="filterResults">@T("Filter:")</label>
+        <select id="filterResults" name="@Html.NameOf(m => m.Options.Filter)">
+            @Html.SelectOption(Model.Options.Filter, BidDetailsFilter.All, T("All Bids").ToString())
+        </select>
+        <button type="submit" name="submit.Filter" value="@T("Apply")">@T("Apply")</button>
+    </fieldset>
+    <fieldset>
+        <table class="items" summary="@T("This is a table of the Bids for the content item")">
+            <colgroup>
+                <col id="Col1" />
+                <col id="Col2" />
+                <col id="Col3" />
+                <col id="Col4" />
+                <col id="Col5" />
+                <col id="Col6" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col"><input type="checkbox" class="check-all"/></th>
+                    <th scope="col">@T("Status")</th>
+                    <th scope="col">@T("Author")</th>
+                    <th scope="col">@T("Bid")</th>
+                    <th scope="col">@T("Date")</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            @{var BidIndex = 0;}
+            @foreach (var BidEntry in Model.Bids) {
+            <tr>
+                <td>
+                    <input type="hidden" value="@Model.Bids[BidIndex].Bid.Id" name="@Html.NameOf(m => m.Bids[BidIndex].Bid.Id)"/>
+                    <input type="checkbox" value="true" name="@Html.NameOf(m => m.Bids[BidIndex].IsChecked)"/>
+                    <input type="hidden" value="@Model.DisplayNameForBidedItem" name="DisplayNameForBidedtem" />
+                    <input type="hidden" value="@Model.BidedItemId" name="BidedItemId" />
+                </td>
+                <td>
+                    @T("Approved")
+                </td>
+                <td>@BidEntry.Bid.Author</td>
+                <td>
+                    @BidEntry.Bid.BidPrice
+                </td>
+                <td>@Display.DateTime(DateTimeUtc: BidEntry.Bid.BidDateUtc.GetValueOrDefault())</td>
+                <td>
+                    <ul class="actions">
+                        <li class="construct">
+                            <a href="@Url.Action("Edit", new {BidEntry.Bid.Id})" title="@T("Edit Bid")">@T("Edit")</a>
+                        </li>
+                        <li class="destruct"></li>
+                    </ul>
+                </td>
+            </tr>
+            BidIndex = BidIndex + 1;
+            } 
+        </table>
+    </fieldset>
+} 
+<div class="manage">
+    @if (Model.BidsClosedOnItem) {
+        using (Html.BeginFormAntiForgeryPost(Url.Action("Enable", new { BidedItemId = Model.BidedItemId }), FormMethod.Post, new { @class = "inline" })) 
+        { 
+    <fieldset>
+        <button type="submit" title="@T("Enable Bids")">@T("Enable Bids")</button>
+    </fieldset>
+        }
+    } else {
+        using (Html.BeginFormAntiForgeryPost(Url.Action("Disable", new { BidedItemId = Model.BidedItemId }), FormMethod.Post, new { @class = "inline" })) { 
+    <fieldset>
+        <button type="submit" class="primaryAction" title="@T("Disable Bids")">@T("Disable Bids")</button>
+    </fieldset>
+        }
+    } 
+</div>

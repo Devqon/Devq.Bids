@@ -1,0 +1,6 @@
+﻿.navicon-Bids {
+background-image:url(images/menu.Bids.png) !important;
+}
+.navicon-Bids:hover {
+background-position:0 -30px !important;
+}

@@ -1,0 +1,18 @@
+﻿Name: Bids
+AntiForgery: enabled
+Author: The Orchard Team
+Website: http://orchardproject.net
+Version: 1.8.1
+OrchardVersion: 1.8
+Description: The Bids system implemented by this module can be applied to arbitrary Orchard content types, such as blogs and pages. It includes Bid validation and spam protection through the Akismet service.
+Features:
+    Devq.Bids:
+        Name: Bids
+        Description: Standard content item Bids.
+        Dependencies: Settings, Orchard.Tokens
+        Category: Social
+	Devq.Bids.Workflows:
+		Name: Bids Workflows Activities
+        Description: Provides workflow activities for Bids management.
+		Category: Workflows
+		Dependencies: Orchard.Workflows

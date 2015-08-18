@@ -1,0 +1,25 @@
+﻿@using Devq.Bids.Models
+@model Devq.Bids.Models.BidPart
+
+<fieldset class="who">
+    <ol>
+        <li>
+            @Html.LabelFor(m => m.Author, T("Name"))
+            @Html.TextBoxFor(m => m.Author, new { @class = "text medium"})
+            <span class="hint">@T("The author's name.")</span>
+        </li>
+    </ol>
+    </fieldset>
+<fieldset class="what">
+    <div>
+        @Html.LabelFor(m => m.BidPrice, T("Bid"))
+        @Html.TextBoxFor(m => m.BidPrice, new { @class = "bid-text" })
+        <span class="hint">@T("The price of the bid.")</span>
+        @Html.HiddenFor(m => m.Id)
+    </div>
+</fieldset>
+
+<fieldset>
+    <button class="primaryAction" type="submit" name="submit.Save" value="save" >@T("Save")</button>
+    <button class="primaryAction" type="submit" name="submit.Save" value="delete" itemprop="RemoveUrl">@T("Delete")</button>
+</fieldset>

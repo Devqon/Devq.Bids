@@ -1,0 +1,6 @@
+﻿@using Devq.Bids.Models
+@{
+    BidPart Bid = Model.ContentPart;
+}
+
+<span class="price">@Bid.Record.BidPrice.ToString("C")</span>

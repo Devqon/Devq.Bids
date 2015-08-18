@@ -1,0 +1,15 @@
+﻿@model Devq.Bids.Models.BidsPart
+
+<fieldset>
+    <legend>@T("Bids") 
+    @if (Model.Bids.Any()) { 
+        <span>&#150; @Display.BidsummaryLinks(item: Model.ContentItem, count: Model.Bids.Count())</span> 
+     }
+     </legend>
+    @Html.EditorFor(m => m.BidsActive)
+    <label class="forcheckbox" for="@Html.FieldIdFor(m => m.BidsActive)">@T("Allow new Bids")</label> 
+    <span class="hint forcheckbox">@T("Enable to show the bid form. Disabling still allows the existing Bids to be shown but does not allow the conversation to continue.")</span>
+    @Html.EditorFor(m => m.MinimumBidPrice)
+    <label class="fortextbox" for="@Html.FieldIdFor(m => m.MinimumBidPrice)">@T("Minimum bid price")</label>
+    <span class="hint fortextbox">@T("The minimum bid price")</span>
+</fieldset>

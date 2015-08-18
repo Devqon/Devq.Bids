@@ -1,0 +1,6 @@
+﻿@using Devq.Bids.Models
+@{
+    BidPart Bid = Model.ContentPart;
+}
+
+<time datetime="@Bid.Date.GetValueOrDefault().ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ")">@Display.DateTimeRelative(DateTimeUtc: Bid.Date.GetValueOrDefault()).ToString()</time>

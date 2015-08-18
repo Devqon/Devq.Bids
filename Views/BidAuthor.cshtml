@@ -1,0 +1,6 @@
+﻿@using Devq.Bids.Models
+@{
+    BidPart bid = Model.ContentPart;
+}
+
+@Html.LinkOrDefault(bid.Owner.UserName, "", new { rel = "nofollow" })

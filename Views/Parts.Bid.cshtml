@@ -1,0 +1,10 @@
+﻿@using Devq.Bids.Models
+
+@{
+    BidPart Bid = Model.ContentPart;
+}
+<article class="bid bid-@Bid.Id">
+    @Display.BidPrice(ContentPart: Model.ContentPart, ContentItem: Model.ContentItem)
+    <span class="who">@Display.BidAuthor(ContentPart: Bid)</span>
+    <span class="when">@Display.BidMetadata(ContentPart: Bid)</span>
+</article>
