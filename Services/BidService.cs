@@ -225,6 +225,7 @@ namespace Devq.Bids.Services {
 
             return true;
         }
+
         public void SendNotificationEmail(BidPart bidPart)
         {
             try

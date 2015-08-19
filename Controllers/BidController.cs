@@ -36,6 +36,7 @@ namespace Devq.Bids.Controllers {
 
                 var bidPart = bid.As<BidPart>();
 
+                // Check if bid is higher than others
                 var heighestBid = _bidService.GetHeighestBid(bid.BidedOn);
                 if (bidPart.BidPrice <= heighestBid.BidPrice && bidPart.Id != heighestBid.Id)
                 {
@@ -44,6 +45,7 @@ namespace Devq.Bids.Controllers {
                     return this.RedirectLocal(returnUrl, "~/");
                 }
 
+                // Check if bid is higher than minimum bid
                 var bidsPart = _bidService.GetContainer(bidPart);
                 var minimumPrice = bidsPart.MinimumBidPrice;
                 if (bidPart.BidPrice <= minimumPrice)
@@ -53,7 +55,7 @@ namespace Devq.Bids.Controllers {
                     return this.RedirectLocal(returnUrl, "~/");
                 }
 
-                // ensure the Bids are not closed on the container, as the html could have been tampered manually
+                // Ensure the bids are not closed on the container, as the html could have been tampered manually
                 if (!_bidService.CanCreateBid(bidPart))
                 {
                     _services.TransactionManager.Cancel();
@@ -63,7 +65,7 @@ namespace Devq.Bids.Controllers {
                 _notifier.Information(T("Your Bid has been added."));
 
                 if (bidsPart.NotificationEmail) {
-                    
+                    _bidService.SendNotificationEmail(bidPart);
                 }
             }
             else {

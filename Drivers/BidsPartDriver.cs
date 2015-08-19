@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Devq.Bids.Models;
 using Devq.Bids.Services;
+using Devq.Bids.Settings;
 using Orchard.ContentManagement;
 using Orchard.ContentManagement.Drivers;
 
@@ -20,12 +21,19 @@ namespace Devq.Bids.Drivers
             return Combined(
                 ContentShape("Parts_ListOfBids", () => {
 
+                    var settings = part.Settings.GetModel<BidsPartSettings>();
+
                     var list = shapeHelper.List();
                     var bids = part
                         .Bids
-                        .OrderByDescending(b => b.BidPrice);
+                        .OrderByDescending(b => b.BidPrice)
+                        .AsQueryable();
 
-                    list.AddRange(bids.Select(b => _contentManager.BuildDisplay(b)));
+                    if (settings.DefaultBidsShown > 0) {
+                        bids = bids.Take(settings.DefaultBidsShown);
+                    }
+
+                    list.AddRange(bids.ToList().Select(b => _contentManager.BuildDisplay(b)));
 
                     return shapeHelper.Parts_ListOfBids(List: list);
                 }),
@@ -35,8 +43,13 @@ namespace Devq.Bids.Drivers
                     if (newBid.Has<BidPart>()) newBid.As<BidPart>().BidedOn = part.Id;
 
                     var editorShape = _contentManager.BuildEditor(newBid);
+                    var minimumBid = part.MinimumBidPrice;
+                    var heighestBid = _bidService.GetHeighestBid(part.Id);
+                    if (heighestBid != null && heighestBid.BidPrice > minimumBid) {
+                        minimumBid = heighestBid.BidPrice;
+                    }
 
-                    return shapeHelper.Parts_BidForm(EditorShape: editorShape, CanStillBid: _bidService.CanStillBidOn(part));
+                    return shapeHelper.Parts_BidForm(EditorShape: editorShape, CanStillBid: _bidService.CanStillBidOn(part), MinimumBid: minimumBid);
                 }));
         }
 

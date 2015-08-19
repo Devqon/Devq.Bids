@@ -25,5 +25,6 @@ namespace Devq.Bids.Services {
         bool CanCreateBid(BidPart bidPart);
 
         BidsPart GetContainer(BidPart bidPart);
+        void SendNotificationEmail(BidPart bidPart);
     }
 }
