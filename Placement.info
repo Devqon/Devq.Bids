@@ -1,11 +1,17 @@
 ﻿<Placement>
   <!-- available display shapes -->
   <!--
-        Parts_Bids
+        Parts_Bids_Enable
+        Parts_Bids_SiteSettings
+        Parts_Bid_Edit
+        Parts_Bid_AdminEdit
+        Parts_BidForm
+        Parts_ListOfBids
     -->
   <!-- widget and edit shapes just get default placement -->
   <!-- edit "shapes" -->
 
+  
   <Place Parts_Bids_Enable="Content:10"/>
   <Place Parts_Bids_SiteSettings="Content:10"/>
   <Place Parts_Bid_Edit="Content:10"/>
@@ -14,6 +20,7 @@
 
   <Match ContentType="Bid">
     <Place Content_SaveButton="-"/><!--Show default save button only on admin-->
+    <Place Parts_Common_Metadata="-" />
   </Match>
 
   <Match DisplayType="Detail">

@@ -7,6 +7,7 @@
     BidsPart bidsPart = Model.ContentPart;
     bool canStillBidOn = Model.CanStillBid;
     var settings = bidsPart.TypePartDefinition.Settings.GetModel<BidsPartSettings>();
+    var minimumPrice = Model.MinimumBid;
 }
 
 
@@ -30,7 +31,9 @@ else if (WorkContext.CurrentUser == null && !AuthorizedFor(Permissions.AddBid)) 
 else {
     @Html.ValidationSummary() 
     <span id="bid-form-beacon"></span>
-    <span>@T("Minimum bidprice: {0}", Model.MinimumBid.ToString("C"))</span>
+     if (minimumPrice > 0) {
+         <span>@T("Minimum bidprice: {0}", minimumPrice.ToString("C"))</span>
+     }
     using (Html.BeginFormAntiForgeryPost(Url.Action("Create", "Bid", new { Area = "Devq.Bids", ReturnUrl = Context.Request.ToUrlString() }), FormMethod.Post, new { @class = "bid-form", id="bid-form-" + Model.ContentItem.Id })) {
         if (TempData.ContainsKey("Bids.InvalidBidEditorShape")) {
             @Display(TempData["Bids.InvalidBidEditorShape"]);

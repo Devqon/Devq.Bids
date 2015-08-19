@@ -1,21 +1,23 @@
 ﻿@model Devq.Bids.Models.BidPart
 
 @{
+    Script.Require("jQuery");
+    Script.Include("jquery-maskmoney.min.js").AtFoot();
 }
 
 @Html.Hidden("Name", WorkContext.CurrentUser.UserName ?? "")
 
 <fieldset class="what">
     @Html.LabelFor(m => m.BidPrice, T("Bid"))
-    @Html.TextBoxFor(m => m.BidPrice, new { @class = "bid-text", id = "bidform-currency" })
+    @Html.TextBoxFor(m => m.BidPrice, new { id = "bidform-currency", @class = "bid-text", Value = (Model.BidPrice > 0 ? Model.BidPrice.ToString() : "") })
     @Html.HiddenFor(m => m.BidedOn)
 </fieldset>
 
 @using (Script.Foot())
 {
     <script>
-        //$(function () {
-        //    $("#bidform-currency").maskMoney({prefix: '&euro;'});
-        //});
+        $(function () {
+            //$("#bidform-currency").maskMoney({prefix: '€ ', thousands: '.', decimal: ','});
+        });
     </script>
 }

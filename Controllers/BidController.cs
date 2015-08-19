@@ -42,6 +42,7 @@ namespace Devq.Bids.Controllers {
                 {
                     _services.TransactionManager.Cancel();
                     _notifier.Error(T("Bid must be higher than {0}", heighestBid.BidPrice.ToString("c")));
+                    AddEditorShapeToTempData(editorShape);
                     return this.RedirectLocal(returnUrl, "~/");
                 }
 
@@ -52,6 +53,7 @@ namespace Devq.Bids.Controllers {
                 {
                     _services.TransactionManager.Cancel();
                     _notifier.Error(T("Bid must be higher than {0}", minimumPrice.ToString("c")));
+                    AddEditorShapeToTempData(editorShape);
                     return this.RedirectLocal(returnUrl, "~/");
                 }
 
@@ -69,9 +71,11 @@ namespace Devq.Bids.Controllers {
                 }
             }
             else {
+                // Used a comma instead of a point, or the other way around
+                _notifier.Error(T("Invalid format"));
                 _services.TransactionManager.Cancel();
 
-                TempData["Bids.InvalidBidEditorShape"] = editorShape;
+                AddEditorShapeToTempData(editorShape);
             }
 
             return this.RedirectLocal(returnUrl, "~/");
@@ -86,6 +90,10 @@ namespace Devq.Bids.Controllers {
 
             _notifier.Information(T("Bid deleted successfully"));
             return Redirect("~/");
+        }
+
+        private void AddEditorShapeToTempData(dynamic editorShape) {
+            TempData["Bids.InvalidBidEditorShape"] = editorShape;
         }
 
         bool IUpdateModel.TryUpdateModel<TModel>(TModel model, string prefix, string[] includeProperties, string[] excludeProperties) {

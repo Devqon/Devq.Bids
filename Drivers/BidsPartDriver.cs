@@ -39,15 +39,20 @@ namespace Devq.Bids.Drivers
                 }),
                 ContentShape("Parts_BidForm", () => {
 
-                    var newBid = _contentManager.New("Bid");
-                    if (newBid.Has<BidPart>()) newBid.As<BidPart>().BidedOn = part.Id;
-
-                    var editorShape = _contentManager.BuildEditor(newBid);
                     var minimumBid = part.MinimumBidPrice;
                     var heighestBid = _bidService.GetHeighestBid(part.Id);
-                    if (heighestBid != null && heighestBid.BidPrice > minimumBid) {
+                    if (heighestBid != null && heighestBid.BidPrice > minimumBid)
+                    {
                         minimumBid = heighestBid.BidPrice;
                     }
+
+                    var newBid = _contentManager.New("Bid");
+                    if (newBid.Has<BidPart>()) {
+                        var bidPart = newBid.As<BidPart>();
+                        bidPart.BidedOn = part.Id;
+                    }
+
+                    var editorShape = _contentManager.BuildEditor(newBid);
 
                     return shapeHelper.Parts_BidForm(EditorShape: editorShape, CanStillBid: _bidService.CanStillBidOn(part), MinimumBid: minimumBid);
                 }));

@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Module.txt" />
+    <Content Include="Scripts\jquery-maskmoney.min.js" />
     <Content Include="Styles\images\menu.comments.png" />
     <Content Include="Styles\menu.bids-admin.css" />
     <Content Include="Styles\devq-bids-admin.css" />
@@ -175,6 +176,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Template.Bid.Notification.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
