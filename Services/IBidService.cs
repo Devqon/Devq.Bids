@@ -24,5 +24,6 @@ namespace Devq.Bids.Services {
         bool CanStillBidOn(BidsPart bidsPart);
         bool CanCreateBid(BidPart bidPart);
 
+        BidsPart GetContainer(BidPart bidPart);
     }
 }

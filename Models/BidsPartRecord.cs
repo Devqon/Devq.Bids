@@ -7,5 +7,6 @@ namespace Devq.Bids.Models
         public virtual decimal MinimumBidPrice { get; set; }
         public virtual BidType BidType { get; set; }
         public virtual bool BidsActive { get; set; }
+        public virtual bool NotificationEmail { get; set; }
     }
 }

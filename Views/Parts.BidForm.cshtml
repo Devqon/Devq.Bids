@@ -10,14 +10,14 @@
 }
 
 
-@*@if (!Model.ContentPart.BidsActive || !canStillBidOn) {
+@if (!Model.ContentPart.BidsActive || !canStillBidOn) {
     if (bidsPart.Bids.Any()) {
     <div id="bids">
         <p class="bid-disabled">@T("Bids have been disabled for this content.")</p>
     </div>
     }
-}*@
-@if (settings.MustBeAuthenticated && WorkContext.CurrentUser == null) {
+}
+else if (settings.MustBeAuthenticated && WorkContext.CurrentUser == null) {
     <div id="bids">
         <p class="bid-disabled">@T("You must be authenticated in order to add a Bid.")</p>
     </div>

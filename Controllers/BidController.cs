@@ -44,7 +44,8 @@ namespace Devq.Bids.Controllers {
                     return this.RedirectLocal(returnUrl, "~/");
                 }
 
-                var minimumPrice = _bidService.GetMinimumBidPrice(bidPart);
+                var bidsPart = _bidService.GetContainer(bidPart);
+                var minimumPrice = bidsPart.MinimumBidPrice;
                 if (bidPart.BidPrice <= minimumPrice)
                 {
                     _services.TransactionManager.Cancel();
@@ -59,7 +60,11 @@ namespace Devq.Bids.Controllers {
                     return this.RedirectLocal(returnUrl, "~/");
                 }
 
-                _notifier.Information(T("Your Bid has been posted."));
+                _notifier.Information(T("Your Bid has been added."));
+
+                if (bidsPart.NotificationEmail) {
+                    
+                }
             }
             else {
                 _services.TransactionManager.Cancel();

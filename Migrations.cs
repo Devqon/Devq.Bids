@@ -59,5 +59,15 @@ namespace Devq.Bids {
 
             return 3;
         }
+
+        public int UpdateFrom3() {
+            
+            // Email notification
+            SchemaBuilder.AlterTable(typeof (BidsPartRecord).Name,
+                table => table
+                    .AddColumn<bool>("NotificationEmail"));
+
+            return 4;
+        }
     }
 }

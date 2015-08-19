@@ -17,8 +17,8 @@
   </Match>
 
   <Match DisplayType="Detail">
-    <Place Parts_ListOfBids="/AsideSecond:3.2" />
-    <Place Parts_BidForm="/AsideSecond:3.1" />
+    <Place Parts_BidForm="/AsideSecond:6.1" />
+    <Place Parts_ListOfBids="/AsideSecond:6.2" />
   </Match>
 
   <Match DisplayType="Summary">

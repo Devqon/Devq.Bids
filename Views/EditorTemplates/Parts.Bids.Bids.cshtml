@@ -13,9 +13,16 @@
     <br/>
     @Html.DropDownListFor(m => m.BidType, new SelectList(Enum.GetValues(typeof(BidType))), new { @class = "ddl-bidtype" })
     <br/>
-    @Html.TextBoxFor(m => m.MinimumBidPrice, new { @class = "input-minimum-price" })
-    <label class="fortextbox" for="@Html.FieldIdFor(m => m.MinimumBidPrice)">@T("Minimum bid price")</label>
-    <span class="hint fortextbox">@T("The minimum bid price")</span>
+    <div class="input-minimum-price">
+        @Html.TextBoxFor(m => m.MinimumBidPrice)
+        <label class="fortextbox" for="@Html.FieldIdFor(m => m.MinimumBidPrice)">@T("Minimum bid price")</label>
+        <span class="hint fortextbox">@T("The minimum bid price")</span>
+    </div>
+    <div>
+        @Html.EditorFor(m => m.NotificationEmail)
+        <label class="forcheckbox" for="@Html.FieldIdFor(m => m.NotificationEmail)">@T("Send notification on new bids")</label>
+        <span class="hint forcheckbox">@T("Send a notification email when a new bid is placed.")</span>
+    </div>
 </fieldset>
 
 

@@ -31,5 +31,11 @@ namespace Devq.Bids.Models
             get { return Retrieve(r => r.BidsActive); }
             set { Store(r => r.BidsActive, value); }
         }
+
+        public bool NotificationEmail
+        {
+            get { return Retrieve(x => x.NotificationEmail); }
+            set { Store(x => x.NotificationEmail, value); }
+        }
     }
 }

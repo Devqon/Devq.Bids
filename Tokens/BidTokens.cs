@@ -18,10 +18,10 @@ namespace Devq.Bids.Tokens {
         public BidTokens(
             IContentManager contentManager,
             IWorkContextAccessor workContextAccessor,
-            IBidService BidService) {
+            IBidService bidService) {
             _contentManager = contentManager;
             _workContextAccessor = workContextAccessor;
-            _bidService = BidService;
+            _bidService = bidService;
             T = NullLocalizer.Instance;
         }
 

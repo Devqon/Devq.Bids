@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Web.Mvc;
 using System.Xml.Linq;
 using Devq.Bids.Models;
 using Devq.Bids.Settings;
@@ -10,10 +11,14 @@ using JetBrains.Annotations;
 using Orchard;
 using Orchard.ContentManagement;
 using Orchard.Core.Common.Models;
+using Orchard.DisplayManagement;
 using Orchard.Environment.Configuration;
 using Orchard.Environment.Descriptor;
 using Orchard.Environment.State;
+using Orchard.Localization;
 using Orchard.Logging;
+using Orchard.Messaging.Services;
+using Orchard.Mvc.Html;
 using Orchard.Security;
 using Orchard.Services;
 
@@ -27,6 +32,9 @@ namespace Devq.Bids.Services {
         private readonly ShellSettings _shellSettings;
         private readonly IShellDescriptorManager _shellDescriptorManager;
         private readonly HashSet<int> _processedBidsParts = new HashSet<int>();
+        private readonly IShapeFactory _shapeFactory;
+        private readonly IShapeDisplay _shapeDisplay;
+        private readonly IMessageService _messageService;
 
         public BidService(
             IOrchardServices orchardServices, 
@@ -34,16 +42,26 @@ namespace Devq.Bids.Services {
             IEncryptionService encryptionService,
             IProcessingEngine processingEngine,
             ShellSettings shellSettings,
-            IShellDescriptorManager shellDescriptorManager) {
+            IShellDescriptorManager shellDescriptorManager, 
+            IShapeFactory shapeFactory, 
+            IMessageService messageService, 
+            IShapeDisplay shapeDisplay) {
+
             _orchardServices = orchardServices;
             _clock = clock;
             _encryptionService = encryptionService;
             _processingEngine = processingEngine;
             _shellSettings = shellSettings;
             _shellDescriptorManager = shellDescriptorManager;
+            _shapeFactory = shapeFactory;
+            _messageService = messageService;
+            _shapeDisplay = shapeDisplay;
+
             Logger = NullLogger.Instance;
+            T = NullLocalizer.Instance;
         }
 
+        public Localizer T { get; set; }
         public ILogger Logger { get; set; }
 
         public BidPart GetBid(int id) {
@@ -139,9 +157,12 @@ namespace Devq.Bids.Services {
 
         }
 
+        public BidsPart GetContainer(BidPart bidPart) {
+            return _orchardServices.ContentManager.Get<BidsPart>(bidPart.BidedOn);
+        }
+
         public decimal GetMinimumBidPrice(BidPart bidPart) {
-            var container = _orchardServices.ContentManager.Get(bidPart.BidedOn);
-            var bidsPart = container.As<BidsPart>();
+            var bidsPart = GetContainer(bidPart);
             return bidsPart.MinimumBidPrice;
         }
 
@@ -150,17 +171,12 @@ namespace Devq.Bids.Services {
                 return false;
             }
 
-            var container = _orchardServices.ContentManager.Get(bidPart.BidedOn);
+            var bidsPart = GetContainer(bidPart);
             
-            if (container == null) {
-                return false;
-            }
-
-            var bidsPart = container.As<BidsPart>();
             if (bidsPart == null) {
                 return false;
             }
-            
+
             var settings = bidsPart.TypePartDefinition.Settings.GetModel<BidsPartSettings>();
             if (!bidsPart.BidsActive) {
                 return false;
@@ -208,6 +224,54 @@ namespace Devq.Bids.Services {
             }
 
             return true;
+        }
+        public void SendNotificationEmail(BidPart bidPart)
+        {
+            try
+            {
+                var bidedOn = _orchardServices.ContentManager.Get(bidPart.BidedOn);
+                if (bidedOn == null)
+                {
+                    return;
+                }
+
+                var owner = bidedOn.As<CommonPart>().Owner;
+                if (owner == null)
+                {
+                    return;
+                }
+
+                var template = _shapeFactory.Create("Template_Bid_Notification", Arguments.From(new
+                {
+                    ContentItem = bidedOn,
+                    BidPart = bidPart,
+                    BidUrl = CreateUrl(bidedOn),
+                }));
+
+                var parameters = new Dictionary<string, object> {
+                    {"Subject", T("Bid notification").Text},
+                    {"Body", _shapeDisplay.Display(template)},
+                    {"Recipients", owner.Email}
+                };
+
+                _messageService.Send("Email", parameters);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "An unexpected error occured while sending a notification email");
+            }
+        }
+
+        public string CreateUrl(IContent content)
+        {
+            var workContext = _orchardServices.WorkContext;
+            if (workContext.HttpContext != null)
+            {
+                var url = new UrlHelper(workContext.HttpContext.Request.RequestContext);
+                return url.ItemDisplayUrl(content);
+            }
+
+            return null;
         }
 
         //private BidPart GetBidWithQueryHints(int id) {

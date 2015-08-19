@@ -21,7 +21,11 @@ namespace Devq.Bids.Drivers
                 ContentShape("Parts_ListOfBids", () => {
 
                     var list = shapeHelper.List();
-                    list.AddRange(part.Bids.Select(b => _contentManager.BuildDisplay(b)));
+                    var bids = part
+                        .Bids
+                        .OrderByDescending(b => b.BidPrice);
+
+                    list.AddRange(bids.Select(b => _contentManager.BuildDisplay(b)));
 
                     return shapeHelper.Parts_ListOfBids(List: list);
                 }),
@@ -37,7 +41,7 @@ namespace Devq.Bids.Drivers
         }
 
         protected override DriverResult Editor(BidsPart part, dynamic shapeHelper) {
-            return ContentShape("Parts_Comments_Enable",
+            return ContentShape("Parts_Bids_Enable",
                 () => shapeHelper.EditorTemplate(TemplateName: "Parts.Bids.Bids", Model: part, Prefix: Prefix));
         }
 
