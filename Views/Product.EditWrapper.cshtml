@@ -1,0 +1,32 @@
+﻿@using Orchard.ContentManagement;
+@using Orchard.Core.Contents;
+@{
+    var contentItem = (ContentItem) Model.ContentItem;
+    var authorizedFor = AuthorizedFor(Permissions.AddProduct, contentItem);
+
+    var excludedContentTypes = new[] {"User"};
+    
+    var title = Model.Text ?? contentItem.ContentType;
+    var showEditIcon = Model.Icon == null || (bool)Model.Icon;
+    
+    // Dirty for ignoring excluded content type
+    var force = Model.Force != null && (bool) Model.Force;
+}
+@if (authorizedFor && Model.ContentItem.Id > 0 && (force || !excludedContentTypes.Contains(contentItem.ContentType)))
+{
+    <div class="content-control">
+        <div class="manage-actions">
+            <a href="@Url.ItemEditUrl(contentItem, new { ReturnUrl = HttpContext.Current.Request.RawUrl })" class="btn btn-success">
+                @if (showEditIcon) {
+                    <i class="fa fa-pencil"></i>
+                }
+                @T("Edit {0}", title)
+                </a>
+            </div>
+            @Display(Model.Child)
+        </div>
+}
+else
+{
+    @Display(Model.Child)
+}

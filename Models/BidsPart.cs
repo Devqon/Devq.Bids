@@ -32,6 +32,10 @@ namespace Devq.Bids.Models
             set { Store(r => r.BidsActive, value); }
         }
 
+        public bool BidsDisabled {
+            get { return BidType == BidType.Free || BidType == BidType.Static; }
+        }
+
         public bool NotificationEmail
         {
             get { return Retrieve(x => x.NotificationEmail); }

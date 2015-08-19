@@ -7,10 +7,18 @@
             <span>@*&#150; @Display.BidsummaryLinks(item: Model.ContentItem, count: Model.Bids.Count())*@</span> 
         }
     </legend>
-    @Html.EditorFor(m => m.BidsActive)
-    <label class="forcheckbox" for="@Html.FieldIdFor(m => m.BidsActive)">@T("Allow new Bids")</label> 
-    <span class="hint forcheckbox">@T("Enable to show the bid form. Disabling still allows the existing Bids to be shown but does not allow the conversation to continue.")</span>
-    <br/>
+
+    @* Always activate on a new content item *@
+    @if (Model.Id > 0) {
+        @Html.EditorFor(m => m.BidsActive)
+        <label class="forcheckbox" for="@Html.FieldIdFor(m => m.BidsActive)">@T("Allow new Bids")</label>
+        <span class="hint forcheckbox">@T("Enable to show the bid form. Disabling still allows the existing Bids to be shown but does not allow the conversation to continue.")</span>
+        <br/>
+    }
+    else {
+        @Html.HiddenFor(m => m.BidsActive, new { Value = true })
+    }
+
     @Html.DropDownListFor(m => m.BidType, new SelectList(Enum.GetValues(typeof(BidType))), new { @class = "ddl-bidtype" })
     <br/>
     <div class="input-minimum-price">

@@ -182,6 +182,10 @@ namespace Devq.Bids.Services {
                 return false;
             }
 
+            if (bidsPart.BidsDisabled) {
+                return false;
+            }
+
             if (settings.MustBeAuthenticated && _orchardServices.WorkContext.CurrentUser == null) {
                 return false;
             }
